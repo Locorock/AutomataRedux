@@ -14,8 +14,8 @@ public class Fruits extends Resource{
     @Override
     public ArrayList<Resource> tick() {
         ArrayList<Resource> resources = new ArrayList<> ();
-        double decayRate = (e.getTemperature ()/60)+(e.getHumidity ()/60)*amount;
-        if(decayRate>0){
+        double decayRate = ((e.getTemperature ()/60)+(e.getHumidity ()/60))*amount*0.1;
+        if(decayRate>0 && amount>0){
             double total = amount;
             double decay = this.request (decayRate);
             double fert = (decay/total)*amassedFertility;

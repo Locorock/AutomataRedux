@@ -20,7 +20,7 @@ public abstract class Active {
     }
 
     public void run(Critter acting, Critter receiving){
-        receiving.dealDamage (pow*multiplier, types, acting);
+        receiving.dealDamage (pow*multiplier*owner.getSize (), types, acting);
     }
 
     public String getName() {

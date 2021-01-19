@@ -15,20 +15,14 @@ public class Leaves extends Resource{
     @Override
     public ArrayList<Resource> tick() {
         ArrayList<Resource> resources = new ArrayList<> ();
-        double decayRate = (e.getTemperature ()/80)+(e.getHumidity ()/80)*amount;
-        if(decayRate>0){
+        double decayRate = ((e.getTemperature ()/80)+(e.getHumidity ()/80))*amount*0.05;
+        if(decayRate>0 && amount>0){
             double total = amount;
             double decay = this.request (decayRate);
             double fert = (decay/total)*amassedFertility;
-            if(Double.isNaN (amassedFertility)){
-                System.out.println ("E");
-            }
             tick = false;
             e.setFertility (e.getFertility ()+fert, this);
             amassedFertility -= fert;
-            if(Double.isNaN (amassedFertility)){
-                System.out.println ("E");
-            }
         }
         return resources;
     }

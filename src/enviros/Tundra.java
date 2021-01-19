@@ -6,8 +6,8 @@ import sources.*;
 
 public class Tundra extends Enviro {
     public static final String name = "Tundra";
-    public Tundra(double temp, double height, double hum, World w, int x, int y, boolean river){
-        super(temp, height, hum, name, w, x, y, river);
+    public Tundra(double temp, double height, double hum, World w, int x, int y, boolean river, boolean seabound){
+        super(temp, height, hum, name, w, x, y, river, seabound);
         this.setFertility (30, null);
         initResources();
     }

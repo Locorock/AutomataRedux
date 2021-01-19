@@ -35,17 +35,20 @@ public class PokeBattle {
         if(acting.getStun() > 0){
             acting.setStun(acting.getStun()-1);
         }else{
-            double limit = acting.getAggressivity ()-(acting.getMaxHP ()-acting.getHP());
-            if(acting.getEnviro ().getR ().nextInt (100)<limit){
+            double limit = acting.getAggressivity ();
+            if(acting.getEnviro ().getR ().nextInt (1)<limit){
                 if(moves.isEmpty ()){
-                    new Struggle (acting, "Struggle").run(acting, receiving);
+                    moves = (TreeSet<Active>) acting.getActives ().clone ();
+                }
+                if(moves.isEmpty ()){
+                    new Struggle (acting, "Struggle").run (acting, receiving);
                 }else{
                     Active active = moves.pollFirst ();
                     active.run(acting, receiving);
                 }
             }else{
                 int diff = (int) (acting.getSpeed ()-receiving.getSpeed ());
-                if(acting.getEnviro ().getR ().nextInt (100)>75-diff){
+                if(acting.getEnviro ().getR ().nextInt (20)>75-diff){
                     return true;
                 }else{
                     return false;
@@ -53,13 +56,16 @@ public class PokeBattle {
             }
         }
 
+        /*
         if(acting.getPoison() > 0){
             acting.setPoison(acting.getPoison()-1);
             ArrayList<String> types = new ArrayList<> ();
             types.add("Poison");
             types.add("Self");
+            System.out.println ("Poison");
             acting.dealDamage (acting.getMaxHP ()/10, types, acting);
         }
+         */
         if(first.getHP ()>0 && second.getHP ()>0){
             return false;
         }else{
@@ -82,10 +88,12 @@ public class PokeBattle {
                     second.setAlive(false);
                     first.getWorld ().kDeaths+=1;
                     first.eat(second);
+                    first.setHP (first.getMaxHP ());
                 }else {
                     first.setAlive (false);
                     first.getWorld ().kDeaths+=1;
                     second.eat(first);
+                    second.setHP (second.getMaxHP ());
                 }
             }
         }

@@ -7,14 +7,14 @@ public class ControlPanel extends JPanel {
     private JSlider simSpeed;
     private JButton frameForward;
     public ControlPanel(MainGUI gui){
-        pause = new JButton ("Resume");
+        pause = new JButton ("Pause");
         pause.setName ("pause");
         pause.addActionListener (gui);
         simSpeed = new JSlider ();
         simSpeed.setMajorTickSpacing (20);
         simSpeed.setMaximum (100);
         simSpeed.setMinimum (0);
-        simSpeed.setValue (0);
+        simSpeed.setValue (50);
         simSpeed.setBorder (BorderFactory.createTitledBorder (BorderFactory.createBevelBorder (0), "Sim Speed"));
         simSpeed.setPaintTicks(true);
         simSpeed.setPaintLabels(true);

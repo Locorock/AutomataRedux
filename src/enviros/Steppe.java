@@ -9,8 +9,8 @@ import sources.Tree;
 
 public class Steppe extends Enviro {
     public static final String name = "Steppe";
-    public Steppe(double temp, double height, double hum, World w, int x, int y, boolean river){
-        super(temp, height, hum, name, w, x, y, river);
+    public Steppe(double temp, double height, double hum, World w, int x, int y, boolean river, boolean seabound){
+        super(temp, height, hum, name, w, x, y, river, seabound);
         this.setFertility (40, null);
         initResources();
     }

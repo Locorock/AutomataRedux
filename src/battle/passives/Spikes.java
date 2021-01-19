@@ -16,7 +16,7 @@ public class Spikes extends Passive {
             ArrayList<String> t = new ArrayList<> ();
             t.add("Piercing");
             t.add("Ranged");
-            acting.dealDamage (value/64*pow, t, receiving);
+            acting.dealDamage ((value/(256/pow)), t, receiving);
         }
         return super.modify (value, types, acting);
     }

@@ -7,25 +7,31 @@ import java.util.ArrayList;
 
 public class Corpse extends Resource {
     private static final String name = "Corpse";
+    public double delta = 0;
     public Corpse(Enviro e, double amount, double fert){
         super (name, e, amount);
         this.setAmassedFertility (fert);
+        delta+=fert;
+    }
+
+    @Override
+    public void setAmassedFertility(double fertility){
+        super.setAmassedFertility (fertility);
+        delta+=fertility;
     }
 
     @Override
     public ArrayList<Resource> tick() {
         ArrayList<Resource> resources = new ArrayList<> ();
-        double decayRate = (e.getTemperature ()/60)+(e.getHumidity ()/60)*amount*0.1;
+        double decayRate = ((e.getTemperature ()/60)+(e.getHumidity ()/60))*amount*0.01;
+        double decayRateB = ((e.getTemperature ()/60)+(e.getHumidity ()/60))*amassedFertility*0.01;
         if(decayRate>0 && this.amount>0){
-            double total = amount;
             double decay = this.request (decayRate);
-            double fert = (decay/total)*amassedFertility;
-            if(Double.isNaN (e.getFertility ())){
-                System.out.println ("ayaya");
-            }
-            if(Double.isNaN (fert))
-            e.setFertility (e.getFertility ()+fert, this);
-            this.amassedFertility-= fert;
+        }
+        if(decayRateB>0){
+            e.setFertility (e.getFertility ()+decayRateB, this);
+            this.amassedFertility-= decayRateB;
+            delta-=decayRateB;
         }
         return resources;
     }

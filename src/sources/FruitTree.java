@@ -16,18 +16,12 @@ public class FruitTree extends Tree {
 
     public ArrayList<Resource> tick() {
         ArrayList<Resource> resources = super.tick ();
-        double growthRate = (e.getFertility()/100)*(e.getHumidity()/50)*amount*2;
+        double growthRate = Math.round((e.getFertility()/100)*(e.getHumidity()/50)*amount*8);
         double fert = growthRate/700;
-        if(bound == null){
-            Resource res = new Fruits(e, growthRate);
-            res.setAmassedFertility (fert);
-            res.setBound(this);
-            resources.add(res);
-            this.bound = res;
-        }else{
-            this.bound.provide (growthRate);
-            this.bound.setAmassedFertility (this.bound.getAmassedFertility ()+fert);
-        }
+        Resource res = new Fruits(e, growthRate);
+        res.setAmassedFertility (fert);
+        res.setBound(this);
+        resources.add(res);
         e.setFertility(e.getFertility ()-fert, this);
         return resources;
     }

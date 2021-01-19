@@ -10,10 +10,8 @@ public class GenCode {
     //INHERIT GENOME
     public GenCode(GenCode a, GenCode b, Random r) {
         code = (BitSet) a.getCode ().clone ();
-        for (int i = 0; i < code.length (); i++) {
-            if (r.nextInt (2) == 0) {
-                code.set (i, b.getCode ().get (i));
-            }
+        for (int i = 0; i < r.nextInt (code.length ()); i++) {
+            code.set (i, b.getCode ().get (i));
         }
     }
 
@@ -21,16 +19,13 @@ public class GenCode {
     public GenCode(Random r) {
         BitSet genericCode = new BitSet ();
         for (int j = 0; j < GeneLibrary.getSize (); j++) {
-            boolean value = r.nextInt (10)==0 ? true : false;
+            boolean value = r.nextInt (2)==0 ? true : false;
             genericCode.set (j, value);
             if (j >= GeneLibrary.getIndex ().get ("Size")[0] && j < GeneLibrary.getIndex ().get ("Size")[0] + GeneLibrary.getIndex ().get ("Size")[1]) {
                 genericCode.set (j, false);
             }
             if (j >= GeneLibrary.getIndex ().get ("Aggressivity")[0] && j < GeneLibrary.getIndex ().get ("Aggressivity")[0] + GeneLibrary.getIndex ().get ("Aggressivity")[1]) {
                 genericCode.set (j, false);
-            }
-            if (j >= GeneLibrary.getIndex ().get ("LeavesEfficiency")[0] && j < GeneLibrary.getIndex ().get ("LeavesEfficiency")[0] + GeneLibrary.getIndex ().get ("LeavesEfficiency")[1]) {
-                genericCode.set (j, true);
             }
         }
         code = genericCode;

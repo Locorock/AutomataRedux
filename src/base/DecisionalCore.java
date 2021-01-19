@@ -1,7 +1,9 @@
 package base;
 
 import battle.PokeBattle;
-import sources.Water;
+import enviros.Ocean;
+import enviros.Wetland;
+import sources.*;
 
 import java.util.*;
 
@@ -43,15 +45,18 @@ public class DecisionalCore {
                             owner.eat(next);
                             action += "eating ";
                         } else {
-                            if (owner.getWorld ().getR ().nextInt (200) < owner.getAggressivity () && hunt ()) {
+                            if (owner.getWorld ().getR ().nextInt (50000) < owner.getHunger ()*owner.getDiet ().get ("Corpse")*owner.getAggressivity () && hunt ()) {
                                 action += "hunting ";
                             } else {
-                                if(owner.getEnviro ().getR ().nextInt (100) < owner.getWanderlust()){
-                                    action = "wander ";
+                                if(owner.getEnviro ().getR ().nextInt (1000) < 20 && (owner.getThirst () > 40 * owner.getSize () || owner.getHunger () > 70 * owner.getSize ())){
+                                    action = "look for something more";
                                     owner.moveTo (wander());
                                     //SMARTER
                                 }else{
-                                    action = "play ";
+                                    if(owner.getEnviro ().getR ().nextInt (1500) < owner.getWanderlust()){
+                                        action = "wander ";
+                                        owner.moveTo (wander());
+                                    }
                                 }
                             }
                         }
@@ -63,6 +68,59 @@ public class DecisionalCore {
         return action;
     }
 
+    public Enviro newWander(){
+        Enviro best = null;
+        int bestValue = -1000;
+        for(int i=-1;i<=1;i++){
+            for(int j=-1;j<=1;j++){
+                Enviro e = owner.getWorld ().getEnviroWrapping(j+owner.getEnviro ().getX (), i+owner.getEnviro ().getY ());
+                double value = 0;
+                for(Resource r: e.getResources ()){
+                    if(r instanceof Water && owner.getThirst ()>50){
+                        if(Math.abs(((Water) r).getSalination ()-owner.getBloodSalination ())<0.3){
+                            value += 1;
+                        }
+                    }
+                    if(owner.getHunger ()>50){
+                        if(r instanceof Leaves && owner.getDiet ().get ("Leaves")>0.3){
+                            value += 1;
+                        }
+                        if(r instanceof Fruits && owner.getDiet ().get ("Fruit")>0.3){
+                            value += 1;
+                        }
+                        if(r instanceof Micro && owner.getDiet ().get ("Corpse")>0.3){
+                            value += 1;
+                        }
+                    }
+                }
+                if(value>0){
+                    value = 1;
+                }else{
+                    value = -1;
+                }
+                if(owner.getSpeed ()-owner.getWebbedFeet ()<0){
+                    if(e instanceof Ocean || e instanceof Wetland || e.isRiver ()){
+                        value += 1;
+                    }else {
+                        value -=1;
+                    }
+                }else{
+                    if(e instanceof Ocean){
+                        value -=1;
+                    }else{
+                        value +=1;
+                    }
+                }
+                value += e.getR ().nextInt (5);
+                if(value>bestValue){
+                    best = e;
+                    bestValue = (int) value;
+                }
+            }
+        }
+        return best;
+    }
+
     public Enviro wander(){
         Enviro e;
         int attempt = 0;
@@ -71,7 +129,7 @@ public class DecisionalCore {
             int directionY = owner.getEnviro ().getR ().nextInt (3)-1;
             e = owner.getWorld ().getEnviroWrapping(directionX+owner.getEnviro ().getX (), directionY+owner.getEnviro ().getY ());
             attempt++;
-        }while(e.getBiome ()=="Ocean" && attempt < 2);
+        }while(e.getBiome ()=="Ocean" && attempt < 1);
         return e;
     }
 
@@ -100,7 +158,7 @@ public class DecisionalCore {
             if(resource instanceof Water){
                 Water water = (Water) resource;
                 double request = Math.min(resource.getAmount (), owner.getSize ()*4);
-                double gain = request-request*Math.abs((owner.getBloodSalination()-water.getSalination ()));
+                double gain = request-request*Math.abs((owner.getBloodSalination()-water.getSalination ())*40); // 0.02 -- 0.08 in 0.05 enviro
                 if(gain>wrap.amount){
                     wrap.amount = gain;
                     wrap.best = resource;
@@ -113,25 +171,41 @@ public class DecisionalCore {
 
     public Resource lookForFood(){
         var wrap = new Object () {
-            double amount = 1;
+            double amount = 0.05*owner.getSize ();
             Resource best = null;
         };
         owner.getEnviro ().getResources ().forEach(resource -> {
-            for (String food : owner.getDiet ().keySet ()) {
-                if (Objects.equals (resource.name, food)) {
-                    double eff = resource.amount*owner.getDiet ().get(food); // AMOUNT * EFFICIENCY
-                    if (eff > wrap.amount) {
-                        wrap.amount = eff;
-                        wrap.best = resource;
-                    }
-                }
+            double eff = evalResource (resource);
+            if (eff > wrap.amount) {
+                wrap.amount = eff;
+                wrap.best = resource;
             }
         });
         this.next = wrap.best;
         if(next!=null){
-            action += " "+wrap.amount;
+            action += " "+wrap.amount+" "+owner.getDiet().get (wrap.best.name)+" "+owner.getCode ().getGeneValue ("LeavesEfficiency");
         }
         return next;
+    }
+
+    public double evalResource(Resource resource){
+        boolean valid = true;
+        if(resource instanceof Tree && (((Tree) resource).getHeight ())>owner.getHeight()){
+            valid = false;
+        }
+        if(valid){
+            for (String food : owner.getDiet ().keySet ()) {
+                if (Objects.equals (resource.name, food)) {
+                    double actual = owner.getSize ()*20;
+                    if(resource.amount<owner.getSize ()){
+                        actual = resource.amount;
+                    }
+                    double eff = actual*owner.getDiet ().get(food); // EATABLE AMOUNT * EFFICIENCY
+                    return eff;
+                }
+            }
+        }
+        return 0;
     }
 
     public boolean hunt() {

@@ -2,23 +2,30 @@ package base;
 
 import sources.Corpse;
 import sources.Excrement;
+import sources.Micro;
 import sources.Water;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.TreeSet;
 
 public class Enviro {
     private Enviro[] enviroDirs;
     private double distance;
     private World world;
     private String biome;
-    private ArrayList<Critter> critters = new ArrayList<> ();
+    private TreeSet<Critter> critters = new TreeSet<> (Critter::compareTo);
     private final ArrayList<Resource> resources = new ArrayList<> ();
     private double temperature, humidity, altitude, fertility;
+    private boolean seabound;
     private double avgTemp, avgHum;
     private Random r;
     private boolean river;
     private int x, y;
+    public int cycles = 0;
+    public int subcycles = 0;
+    public static double deltaD = 0;
+    public static double deltaC = 0;
 
     private int rainStr, quakeStr, lightningStr, eruptionS;
 
@@ -31,7 +38,7 @@ public class Enviro {
         this.r = r;
     }
 
-    public Enviro(double avgTemp, double altitude, double avgHum, String biome, World world, int x, int y, boolean river) {
+    public Enviro(double avgTemp, double altitude, double avgHum, String biome, World world, int x, int y, boolean river, boolean seabound) {
         this.avgTemp = avgTemp;
         this.altitude = altitude;
         this.avgHum = avgHum;
@@ -43,21 +50,29 @@ public class Enviro {
         this.x = x;
         this.y = y;
         this.river = river;
+        this.seabound = seabound;
         if(river){
-            this.resources.add(new Water(this, 10000000, 0.01));
+            this.resources.add(new Water(this, 10000000, 0.01+ (seabound ? 0.04 : 0)));
         }
 
     }
 
     public void cycle(){
+        cycles++;
         for(int i=0; i<resources.size ();i++){
+            subcycles++;
             Resource r = resources.get(i);
             ArrayList<Resource> res = r.tick ();
-            this.resources.addAll(res);
-            if(r.amount<=0 && r.bound == null){
+            merge(res);
+            if(r.amount<=0.1 && !(r instanceof Micro)) {
+                fertility += r.amassedFertility;
                 resources.remove (i);
-                if(r instanceof Excrement)
-                    System.out.println(((Excrement) r).delta);
+                if (r instanceof Excrement) {
+                    deltaD += ((Excrement) r).delta - r.amassedFertility;
+                }
+                if (r instanceof Corpse) {
+                    deltaC += ((Corpse) r).delta - r.amassedFertility;
+                }
                 i--;
             }
         }
@@ -88,8 +103,9 @@ public class Enviro {
     }
 
     public void merge(ArrayList<Resource> res){
-
-        resources.addAll(res);
+        for(Resource resource : res){
+            merge(resource);
+        }
     }
 
     public double getTemperature() {
@@ -228,18 +244,26 @@ public class Enviro {
         this.enviroDirs = dirs;
     }
 
-    public ArrayList<Critter> getCritters() {
+    public TreeSet<Critter> getCritters() {
         return critters;
     }
 
     public ArrayList<Resource> getResources() { return resources; }
 
-    public void setCritters(ArrayList<Critter> critters) {
+    public void setCritters(TreeSet<Critter> critters) {
         this.critters = critters;
     }
 
     public double getFertility() {
         return fertility;
+    }
+
+    public boolean isSeabound() {
+        return seabound;
+    }
+
+    public void setSeabound() {
+        this.seabound = true;
     }
 
     public void setFertility(double fertility, Resource source) {

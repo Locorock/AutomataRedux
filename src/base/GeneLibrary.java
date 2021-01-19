@@ -46,15 +46,13 @@ public class GeneLibrary {
         Aggressivity (32, 1, 0),
         WebbedFeet (32, 1, 1),
         Size (32, 1, 0),
-        BloodSalination (32, 1, 0),
+        BloodSalination (8, 1, 0),
 
         ActiveStart(1,0,0),
 
         Claws(32, 1, 0.5),
         Jaws(32, 1, 0.5),
-        PoisonedJaws (32, 1, 0.5),
         Tail(32, 1, 0.5),
-        PoisonSpit(32, 1, 0.5),
         AcidSpit(32, 1, 0.5),
 
         ActiveEnd(1,0,0),
@@ -62,15 +60,13 @@ public class GeneLibrary {
 
         Carapace(32, 1, 0.5),
         Spikes(32, 1, 0.5),
-        PoisonSpikes(32, 1, 0.5),
-        PoisonRes(32, 1, 0.5),
         ThickSkin(32, 1, 0.5),
 
         PassiveEnd(1,0,0),
 
-        LeavesEfficiency (32, 1, 1),
-        FruitEfficiency (32, 1, 1),
-        MeatEfficiency (32, 1, 1);
+        LeavesEfficiency (8, 1, 1),
+        FruitEfficiency (8, 1, 1),
+        MeatEfficiency (8, 1, 1);
 
 
         //PropensionCluster (CellList.values ().length * 8, 3),

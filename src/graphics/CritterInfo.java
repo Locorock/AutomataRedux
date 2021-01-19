@@ -1,8 +1,10 @@
 package graphics;
 
 import base.Critter;
+import base.GeneLibrary;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
@@ -14,6 +16,8 @@ public class CritterInfo extends JPanel implements WindowStateListener, InfoPane
     private final JLabel info;
     private final JLabel actions;
     private final JScrollPane scroll;
+    private final JScrollPane scroll2;
+    private final JPanel genes;
     private final Critter c;
 
     public CritterInfo(Critter c) {
@@ -25,7 +29,25 @@ public class CritterInfo extends JPanel implements WindowStateListener, InfoPane
         actions = new JLabel ();
         scroll = new JScrollPane (actions);
         this.add (scroll);
+        genes = new JPanel ();
+        genes.setLayout (new GridLayout (5,5));
+        scroll2 = new JScrollPane (genes);
+        this.add (scroll2);
         showInfo ();
+        setupGenes ();
+    }
+
+    public void setupGenes(){
+        for(GeneLibrary.GeneIds id: GeneLibrary.GeneIds.values ()){
+            JProgressBar jp = new JProgressBar ();
+            jp.setMaximum (id.getSize ());
+            jp.setValue (c.getCode ().getCardinality (id.getName ()));
+            jp.setName (id.getName ());
+            jp.setToolTipText ("E"+c.getCode ().getCardinality (id.getName ()));
+            jp.setStringPainted (true);
+            jp.setString (id.getName ());
+            genes.add(jp);
+        }
     }
 
     public void showInfo() {
@@ -35,6 +57,11 @@ public class CritterInfo extends JPanel implements WindowStateListener, InfoPane
         info += "Size: " + c.getSize () + "<br>";
         info += "BaseSpeed: " + c.getSpeed () + "<br>";
         info += "Speed: " + c.getSpeed () + "<br>";
+        info += "Failure: " + c.getFailureInteger() + "<br>";
+        info += "Instability: " + c.total + "<br>";
+        info += "Salination: "+c.getBloodSalination ()+ "<br>";
+        info += "Generation: "+c.gen+ "<br>";
+        info += "OTT: "+c.ott+"<br>";
         info += "Position: " + c.getEnviro ().getX () + " - " + c.getEnviro ().getX () + "<br>";
         info += "</html>";
         this.info.setText (info);

@@ -6,8 +6,8 @@ import sources.Cactus;
 
 public class Desert extends Enviro {
     public static final String name = "Desert";
-    public Desert(double temp, double height, double hum, World w, int x, int y, boolean river){
-        super(temp, height, hum, name, w, x, y, river);
+    public Desert(double temp, double height, double hum, World w, int x, int y, boolean river, boolean seabound){
+        super(temp, height, hum, name, w, x, y, river, seabound);
         this.setFertility (20, null);
         initResources();
     }

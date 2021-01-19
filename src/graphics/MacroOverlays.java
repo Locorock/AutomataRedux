@@ -6,7 +6,9 @@ import base.World;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class MacroOverlays {
     private static final int wUnit = 16;
@@ -37,13 +39,14 @@ public class MacroOverlays {
         ((ArrayList<ArrayList<Enviro>>) w.getMap ().clone ()).forEach (current -> {
             ((ArrayList<Enviro>) current.clone ()).forEach (currentEnviro -> {
                 Color c;
-                if (currentEnviro.getBiome () == "Ocean") {
+                if (currentEnviro.getBiome () == "Ocean" || currentEnviro.getBiome () == "Lake") {
                     c = Color.darkGray;
                 } else {
                     c = Color.gray;
                 }
+                int count = currentEnviro.getCritters ().size ();
                 if (currentEnviro.getCritters ().size () > 1) {
-                    c = getRedScale (currentEnviro.getCritters ().size (), c);
+                    c = getRedScale (count, c);
                 }
                 g.setColor (c);
                 Rectangle2D r = new Rectangle (wUnit * currentEnviro.getX (), wUnit * currentEnviro.getY (), Math.round (wUnit), Math.round (wUnit));
@@ -108,6 +111,10 @@ public class MacroOverlays {
                     }
                     case "Wasteland": {
                         c = Color.decode ("#A7D87b");
+                        break;
+                    }
+                    case "Lake": {
+                        c = Color.decode ("#0023E0");
                         break;
                     }
                     default: {

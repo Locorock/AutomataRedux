@@ -4,7 +4,7 @@ import battle.Active;
 import base.Critter;
 
 public class PoisonedJaws extends Active {
-    public static double multiplier = 0.6;
+    public static double multiplier = 1.2;
     public PoisonedJaws(Critter acting, String name, double pow) {
         super (acting, name, pow, multiplier);
         this.types.add("Piercing");

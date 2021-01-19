@@ -6,8 +6,8 @@ import sources.*;
 
 public class Forest extends Enviro {
     public static final String name = "Forest";
-    public Forest(double temp, double height, double hum, World w, int x, int y, boolean river){
-        super(temp, height, hum, name, w, x, y, river);
+    public Forest(double temp, double height, double hum, World w, int x, int y, boolean river, boolean seabound){
+        super(temp, height, hum, name, w, x, y, river, seabound);
         this.setFertility (100, null);
         initResources();
     }

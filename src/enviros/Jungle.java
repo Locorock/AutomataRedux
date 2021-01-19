@@ -6,8 +6,8 @@ import sources.*;
 
 public class Jungle extends Enviro {
     public static final String name = "Jungle";
-    public Jungle(double temp, double height, double hum, World w, int x, int y, boolean river){
-        super(temp, height, hum, name, w, x, y, river);
+    public Jungle(double temp, double height, double hum, World w, int x, int y, boolean river, boolean seabound){
+        super(temp, height, hum, name, w, x, y, river, seabound);
         this.setFertility (140, null);
         initResources();
     }

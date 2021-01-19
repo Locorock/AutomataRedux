@@ -124,6 +124,16 @@ public class MainGUI implements KeyListener, ActionListener, WindowListener, Cha
                 panel.setFertView ();
                 break;
             }
+            case "graph": {
+                JFrame f = new JFrame ();
+                f.addWindowListener (this);
+                f.setSize (300, 400);
+                Graph cr = new Graph ("PopDelta", w);
+                f.setContentPane (cr);
+                openRenders.add (cr);
+                f.setVisible (true);
+                break;
+            }
             case "pause":{
                 control.swap ();
                 w.getT ().running = !w.getT ().running;
@@ -155,13 +165,7 @@ public class MainGUI implements KeyListener, ActionListener, WindowListener, Cha
         int key = keyEvent.getKeyCode ();
         System.out.println (key);
         if (key == KeyEvent.VK_G) {
-            JFrame f = new JFrame ();
-            f.addWindowListener (this);
-            f.setSize (300, 400);
-            Graph cr = new Graph ("PopDelta", w);
-            f.setContentPane (cr);
-            openRenders.add (cr);
-            f.setVisible (true);
+
         }
         if (key == KeyEvent.VK_F) {
             w.getT ().loop = true;

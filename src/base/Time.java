@@ -98,23 +98,21 @@ public class Time extends Thread {
     }
 
     public void tick() {
-        new Vector<> (w.getCritters ()).forEach (c ->{
-            if (c.isAlive ()) {
-                c.tick ();
-            } else {
-                double amount = c.getBiomass ();
-                double fert = c.getAmassedFertility ();
-                if(!(Double.isNaN (amount) || Double.isNaN (fert))){
-                    Resource corpse = new Corpse (c.getEnviro (), amount, fert);
-                    c.getEnviro ().merge (corpse);
-                }else{
-                    System.out.println (fert);
-                    System.out.println (amount);
-                    System.out.println ("notto guddo");
+        new Vector<> (w.getEnviros ()).forEach (e -> {
+            new Vector<> (e.getCritters ()).forEach (c -> {
+                if (c.isAlive ()) {
+                    c.tick ();
+                } else {
+                    double amount = c.getBiomass ();
+                    double fert = c.getAmassedFertility ();
+                    if (!(Double.isNaN (amount) || Double.isNaN (fert) || c.isEaten())) {
+                        Resource corpse = new Corpse (c.getEnviro (), amount, fert);
+                        c.getEnviro ().merge (corpse);
+                    }
+                    w.getCritters ().remove (c);
+                    c.getEnviro ().getCritters ().remove (c);
                 }
-                w.getCritters ().remove (c);
-                c.getEnviro ().getCritters ().remove (c);
-            }
+            });
         });
     }
 

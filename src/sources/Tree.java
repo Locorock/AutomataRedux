@@ -24,18 +24,11 @@ public class Tree extends Resource {
 
     public ArrayList<Resource> tick() {
         ArrayList<Resource> resources = new ArrayList<> ();
-        double growthRate = (e.getFertility()/100)*(e.getHumidity()/50)*amount*2;
+        double growthRate = Math.round((e.getFertility()/100)*(e.getHumidity()/50)*amount);
         double fert = growthRate/1000;
-        if(bound == null){
-            Resource res = new Leaves (e, growthRate);
-            res.setAmassedFertility (fert);
-            res.setBound(this);
-            resources.add(res);
-            this.bound = res;
-        }else{
-            this.bound.provide (growthRate);
-            this.bound.setAmassedFertility (this.bound.getAmassedFertility ()+fert);
-        }
+        Resource res = new Leaves (e, growthRate);
+        res.setAmassedFertility (fert);
+        resources.add(res);
         e.setFertility(e.getFertility ()-fert, this);
         return resources;
     }

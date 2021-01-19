@@ -11,6 +11,7 @@ public class WorldMenuBar extends JMenuBar {
     private final JRadioButtonMenuItem popView;
     private final JRadioButtonMenuItem heightView;
     private final JRadioButtonMenuItem fertView;
+    private final JMenuItem pops;
     private final JMenuItem filters;
     public JLabel pop, fDeaths, aDeaths, tDeaths, kDeaths, ticks;
     private final MainGUI gui;
@@ -96,6 +97,13 @@ public class WorldMenuBar extends JMenuBar {
         fertView.addActionListener (gui);
 
         overlays.addSeparator ();
+
+        pops = new JMenuItem ("Population");
+        pops.setName ("graph");
+        pops.setMnemonic (KeyEvent.VK_O);
+        group.add (pops);
+        overlays.add (pops);
+        pops.addActionListener (gui);
 
         filters = new JMenuItem ("Filters");
         filters.setName ("filters");

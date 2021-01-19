@@ -10,7 +10,7 @@ import java.util.*;
 import static base.SimplexNoise.generateOctavedSimplexNoise;
 
 public class World {
-    public static final int tickSpeed = 100;
+    public static final int tickSpeed = 50;
     private static final int size = 48;
 
     public int tDeaths = 0;
@@ -45,9 +45,8 @@ public class World {
 
     public void run(boolean hasWindow) throws InterruptedException {
         generateWorldSimplex (0, 0);
-        Collections.shuffle (enviros);
-        Enviro start = enviros.get (0);
-        for(int i = 0;i<100;i++){
+        Enviro start = enviros.get (48*24+2);
+        for(int i = 0;i<500;i++){
             int[] values = new int[GeneLibrary.GeneIds.values ().length];
             Arrays.fill (values, 0);
             values[13] = (int) 32;
@@ -76,24 +75,77 @@ public class World {
         double[][][] stats = new double[World.size][World.size][3];
         for (int i = 0; i < World.size; i++) {
             for (int j = 0; j < World.size; j++) {
-                double height = (((heightMap[i][j] + 1) / 2) * 128) - nearBorderValue (j, i) + new Random().nextGaussian ()*5;
+                double height = (((heightMap[i][j] + 1) / 2) * 200) - nearBorderValue (j, i) + new Random().nextGaussian ()*10;
                 double temp = Math.abs (heatMap[i][j]) * 100 - 10 + data.worldGenParams.get ("tempOffset");
                 double hum = Math.abs (humidityMap[i][j]) * 100 * data.worldGenParams.get ("humMult");
                 stats[i][j] = new double[]{height, temp, hum};
             }
         }
         boolean[][] rivers = generateRivers (stats);
+        boolean[][] lakes = identifyLakes (stats);
         map = new ArrayList<> ();
         for(int i=0;i<World.size;i++){
             map.add (new ArrayList<> ());
             for(int j=0;j<World.size;j++){
-                Enviro e = buildEnviro (stats[i][j][0], stats[i][j][1], stats[i][j][2], j, i, rivers[i][j]);
+                boolean seabound = false;
+                for(int k=-1;k<=1;k++){
+                    for(int t=-1;t<=1;t++){
+                        try{
+                            if(stats[k+i][t+j][0] <= data.worldGenParams.get ("seaLevel") && !lakes[k+i][t+j]) {
+                                seabound = true;
+                            }
+                        }catch(ArrayIndexOutOfBoundsException e){
+                        };
+                    }
+                }
+                Enviro e = buildEnviro (stats[i][j][0], stats[i][j][1], stats[i][j][2], j, i, rivers[i][j], lakes[i][j], seabound);
                 map.get(i).add(e);
                 enviros.add(e);
             }
         }
 
         printBiomes ();
+    }
+
+    private boolean[][] identifyLakes(double[][][] stats){
+        boolean[][] lakes = new boolean[size][size];
+        for(int i=0;i<lakes.length;i++){
+            Arrays.fill(lakes[i],true);
+        }
+        ArrayList<boolean[][]> agglom = new ArrayList<> ();
+        for(int i=0;i< World.size;i++) {
+            for (int j = 0; j < World.size; j++) {
+                if((i==0 || i==World.size-1 || j==0 || j==World.size-1) && stats[i][j][0] <= data.worldGenParams.get ("seaLevel")){
+                    boolean[][] ocean = new boolean[size][size];
+                    ocean[i][j] = true;
+                    loopLake (i, j, stats , ocean);
+                    agglom.add(ocean);
+                }
+            }
+        }
+        for(boolean[][] ocean : agglom){
+            for(int i=0;i<lakes.length;i++) {
+                for (int j=0; j<lakes.length; j++) {
+                    if(ocean[i][j]==true){
+                        lakes[i][j]=false;
+                    }
+                }
+            }
+        }
+        return lakes;
+    }
+
+    private void loopLake(int i, int j, double[][][] stats, boolean[][] ocean){
+        for (int k = -1; k <= 1; k++) {
+            for (int t = -1; t <= 1; t++) {
+                if(k+i>=0 && t+j>=0 && k+i<ocean.length && t+j<ocean.length && k+t!=0){
+                    if (stats[i + k][j + t][0] <= data.worldGenParams.get ("seaLevel") && !ocean[i + k][j + t]) {
+                        ocean[i + k][j + t] = true;
+                        loopLake (i+k, j+t, stats, ocean);
+                    }
+                }
+            }
+        }
     }
 
     private boolean[][] generateRivers(double[][][] stats){
@@ -155,13 +207,13 @@ public class World {
         return rivers;
     }
 
-    private Enviro buildEnviro(double height, double temp, double hum, int x, int y, boolean river) {
-        String biome = assignBiomeRedux (height, temp, hum, river);
+    private Enviro buildEnviro(double height, double temp, double hum, int x, int y, boolean river, boolean lake, boolean seabound) {
+        String biome = assignBiomeRedux (height, temp, hum, river, lake);
         Enviro instance = null;
         try {
             instance = (Enviro) Class.forName ("enviros." + biome)
-                    .getDeclaredConstructor (new Class[]{double.class, double.class, double.class, World.class, int.class, int.class, boolean.class})
-                    .newInstance (temp, height, hum, this, x, y, river);
+                    .getDeclaredConstructor (new Class[]{double.class, double.class, double.class, World.class, int.class, int.class, boolean.class, boolean.class})
+                    .newInstance (temp, height, hum, this, x, y, river, seabound);
         } catch (InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace ();
         }
@@ -199,9 +251,13 @@ public class World {
         return null;
     }
 
-    private String assignBiomeRedux(double height, double temp, double hum, boolean river) {
+    private String assignBiomeRedux(double height, double temp, double hum, boolean river, boolean lake) {
         if (height <= data.worldGenParams.get ("seaLevel")) {
-            return "Ocean";
+            if(lake){
+                return "Lake";
+            }else{
+                return "Ocean";
+            }
         } else {
             ArrayList<Double> wProbs = new ArrayList<> ();
             double tProb = 0;
@@ -257,7 +313,7 @@ public class World {
         if (j <= 7) {
             n += 7 - j;
         }
-        return n * 15;
+        return n * n * n;
     }
 
     public void printBiomes() {

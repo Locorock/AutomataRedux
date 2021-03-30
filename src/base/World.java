@@ -76,8 +76,8 @@ public class World {
         for (int i = 0; i < World.size; i++) {
             for (int j = 0; j < World.size; j++) {
                 double height = (((heightMap[i][j] + 1) / 2) * 200) - nearBorderValue (j, i) + new Random().nextGaussian ()*10;
-                double temp = Math.abs (heatMap[i][j]) * 100 - 10 + data.worldGenParams.get ("tempOffset");
-                double hum = Math.abs (humidityMap[i][j]) * 100 * data.worldGenParams.get ("humMult");
+                double temp = Math.abs (heatMap[i][j]) * 100 + 10 + data.worldGenParams.get ("tempOffset");
+                double hum = Math.abs (humidityMap[i][j]) * 100 + 10 * data.worldGenParams.get ("humMult");
                 stats[i][j] = new double[]{height, temp, hum};
             }
         }

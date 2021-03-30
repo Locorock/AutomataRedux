@@ -15,7 +15,7 @@ public class Ocean extends Enviro {
 
     public void initResources(){
         this.getResources ().add(new Water (this, 100000000, 0.1));
-        this.getResources ().add(new Grass (this, 5*this.getHumidity (), 1));
+        this.getResources ().add(new Grass (this, 30, 1));
         this.getResources ().add(new Micro (this, 10));
 
     }

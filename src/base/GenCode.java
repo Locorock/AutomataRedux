@@ -27,6 +27,9 @@ public class GenCode {
             if (j >= GeneLibrary.getIndex ().get ("Aggressivity")[0] && j < GeneLibrary.getIndex ().get ("Aggressivity")[0] + GeneLibrary.getIndex ().get ("Aggressivity")[1]) {
                 genericCode.set (j, false);
             }
+            if (j >= GeneLibrary.getIndex ().get ("BloodSalination")[0] && j < GeneLibrary.getIndex ().get ("BloodSalination")[0] + GeneLibrary.getIndex ().get ("BloodSalination")[1]) {
+                genericCode.set (j, true);
+            }
         }
         code = genericCode;
     }

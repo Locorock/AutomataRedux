@@ -9,7 +9,7 @@ public enum EnviroList {
     Savanna (35, 75, 10, 65, 50, 80),
     Taiga (0, 30, 25, 70, 50, 80),
     Tundra (-10, 30, 0, 30, 40, 40),
-    Wetland (0, 50, 60, 110, 40, 160),
+    Wetland (0, 50, 50, 110, 40, 160),
     Snowland (-10, 15, 25, 110, 40, 20);
 
 

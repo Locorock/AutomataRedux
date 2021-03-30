@@ -21,6 +21,7 @@ public class Time extends Thread {
     public boolean loop = false;
     public HashMap<String, Double> times;
     public double[] totals;
+    public static int cycles = 0;
     //public int loops = WorldHandler.ticks;
 
     public Time(double tickSize, int cycleSize, World w) {
@@ -83,6 +84,7 @@ public class Time extends Thread {
             ticks++;
             if (ticks >= cycleSize) {
                 cycle ();
+                cycles++;
                 ticks = 0;
             }
             elapsed = (double) (System.nanoTime () - start) / 1000000;

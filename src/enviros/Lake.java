@@ -15,7 +15,7 @@ public class Lake extends Enviro {
 
     public void initResources(){
         this.getResources ().add(new Water (this, 100000000, 0.01));
-        this.getResources ().add(new Grass (this, 10*this.getHumidity (), 2));
-        this.getResources ().add(new Micro (this, 10));
+        this.getResources ().add(new Grass (this, 50*this.getHumidity (), 2));
+        this.getResources ().add(new Micro (this, 100));
     }
 }

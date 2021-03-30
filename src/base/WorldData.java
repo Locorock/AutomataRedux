@@ -24,8 +24,8 @@ public class WorldData {
         critterGeneticBounds.put ("Perception", new Double[]{shiftToRange (0, 10, 0, 256), shiftToRange (10, 100, 254, 256)});
         critterGeneticBounds.put ("Height", new Double[]{shiftToRange (0, 1, 0, 256), shiftToRange (1, 10, 128, 256)});
 
-        critterParams.put ("longevitySizeMultiplier", shiftToRange (20, 80, 0, 256));
-        critterParams.put ("longevityBaseValue", shiftToRange (150, 500, 0, 256));
+        critterParams.put ("longevitySizeMultiplier", shiftToRange (20, 80, 128, 256));
+        critterParams.put ("longevityBaseValue", shiftToRange (150, 500, 60, 256));
         critterParams.put ("longevityMateMultiplier", shiftToRange (50, 100, 128, 256));
         critterParams.put ("mateCostHungerDenom", shiftToRange (2, 5, 128, 256));
         critterParams.put ("mateCostThirstDenom", shiftToRange (2, 5, 128, 256));

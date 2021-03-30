@@ -45,15 +45,15 @@ public class DecisionalCore {
                             owner.eat(next);
                             action += "eating ";
                         } else {
-                            if (owner.getWorld ().getR ().nextInt (50000) < owner.getHunger ()*owner.getDiet ().get ("Corpse")*owner.getAggressivity () && hunt ()) {
+                            if (owner.getWorld ().getR ().nextInt (50000) < owner.getHunger ()*owner.getDiet ().get ("Corpse")*owner.getAggressivity ()*(owner.getEnviro ().getCritters ().size ()/20) && hunt ()) {
                                 action += "hunting ";
                             } else {
-                                if(owner.getEnviro ().getR ().nextInt (1000) < 20 && (owner.getThirst () > 40 * owner.getSize () || owner.getHunger () > 70 * owner.getSize ())){
+                                if(owner.getEnviro ().getR ().nextInt (20000) < 20 && (owner.getThirst () > 40 * owner.getSize () || owner.getHunger () > 70 * owner.getSize ())){
                                     action = "look for something more";
                                     owner.moveTo (wander());
                                     //SMARTER
                                 }else{
-                                    if(owner.getEnviro ().getR ().nextInt (1500) < owner.getWanderlust()){
+                                    if(owner.getEnviro ().getR ().nextInt (100000) < owner.getWanderlust()){
                                         action = "wander ";
                                         owner.moveTo (wander());
                                     }
@@ -151,7 +151,7 @@ public class DecisionalCore {
 
     public Resource lookForWater(){
         var wrap = new Object () {
-            double amount = 1;
+            double amount = -10;
             Resource best = null;
         };
         owner.getEnviro ().getResources ().forEach(resource -> {
@@ -211,7 +211,7 @@ public class DecisionalCore {
     public boolean hunt() {
         Enviro enviro = owner.getEnviro ();
         for (Critter critter : enviro.getCritters ()) {
-            if (owner.getCode ().getHammingDiff ("AppearanceCluster", critter.getCode ().getCode ()) > 8) {
+            if (owner.getCode ().getHammingDiff ("AppearanceCluster", critter.getCode ().getCode ()) >= 0) {
                 String reaction = critter.alert (owner);
                 if (Objects.equals (reaction, "flee")) {
                     if (owner.getSpeed () > critter.getSpeed ()) {

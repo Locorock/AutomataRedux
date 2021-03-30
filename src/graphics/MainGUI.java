@@ -95,7 +95,7 @@ public class MainGUI implements KeyListener, ActionListener, WindowListener, Cha
         menu.tDeaths.setText (getFixedString (w.tDeaths, 4));
         menu.aDeaths.setText (getFixedString (w.aDeaths, 4));
         menu.kDeaths.setText (getFixedString (w.kDeaths, 4));
-        menu.ticks.setText (getFixedString (lastCycleTime, 4));
+        menu.ticks.setText (getFixedString (w.getT ().cycles, 4));
         latch.countDown ();
     }
 

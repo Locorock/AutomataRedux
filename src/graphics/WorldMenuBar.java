@@ -48,7 +48,7 @@ public class WorldMenuBar extends JMenuBar {
         pop.setBorder (new BevelBorder (1));
         this.add (pop);
 
-        this.add (new JLabel ("  Ticks:"));
+        this.add (new JLabel ("  Cycles:"));
 
         ticks = new JLabel ("0");
         ticks.setBorder (new BevelBorder (1));

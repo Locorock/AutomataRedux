@@ -13,8 +13,8 @@ public class Wetland extends Enviro {
     }
 
     public void initResources(){
-        this.getResources ().add(new Water (this, 1000000000, 0.03+ (isSeabound () ? 0.02 : 0)));
-        this.getResources ().add(new Tree (this, 10*this.getHumidity (), false, 2));
-        this.getResources ().add(new Grass (this, 20*this.getHumidity (), 1));
+        this.getResources ().add(new Water (this, 1000000000, 0.04+ (isSeabound () ? 0.03 : 0)));
+        this.getResources ().add(new Tree (this, 7*this.getHumidity (), false, 2));
+        this.getResources ().add(new Grass (this, 10*this.getHumidity (), 1));
     }
 }
